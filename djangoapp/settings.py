@@ -29,7 +29,8 @@ SECRET_KEY = 'django-insecure-^yixhwrzs&5!5!bcmin3pd69no-94h@+^z-^8d=t605s(z*k@x
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    "djangoapp-backend-production.up.railway.app"
+    "djangoapp-backend-production.up.railway.app",
+    "127.0.0.1"
 ]
 
 
@@ -42,11 +43,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'api.apps.ApiConfig',
+    'myproject.apps.MyprojectConfig',
     'rest_framework',
     'drf_yasg',
     'corsheaders',
-    
 ]
 
 
@@ -96,11 +96,6 @@ DATABASES = {
         conn_max_age=600,  # Keeps connection open for better performance
     )
 }
-
-
-
-
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
