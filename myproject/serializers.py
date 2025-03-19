@@ -1,21 +1,44 @@
 from rest_framework import serializers
-from .models import Post, Comment
+from .models import CreatedBy, Post, Comment, User
 
-class CreatedBySerializer(serializers.Serializer):
-    userId = serializers.IntegerField()
-    username = serializers.CharField(max_length=255)
-    profilePic = serializers.CharField(max_length=500)
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'profile_pic']
+
+class CreatedBySerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(source='user.id')
+    username = serializers.CharField(source='user.username')
+    profile_pic = serializers.CharField(source='user.profile_pic')
+
+    class Meta:
+        model = CreatedBy
+        fields = ['id', 'username', 'profile_pic']
 
 class PostSerializer(serializers.ModelSerializer):
-    createdBy = CreatedBySerializer()
-    
+    created_by = CreatedBySerializer(read_only=True)
+
     class Meta:
         model = Post
-        fields = ['id', 'createdBy', 'createdAt', 'updatedAt', 'postPic', 'likes']
+        fields = ['post_id', 'caption', 'created_by', 'created_at', 'updated_at', 'post_pic', 'likes']
+        read_only_fields = ['created_by', 'created_at', 'updated_at']
 
 class CommentSerializer(serializers.ModelSerializer):
-    commentedBy = CreatedBySerializer()
-    
+    commented_by = CreatedBySerializer(required=False)
+
     class Meta:
         model = Comment
-        fields = ['id', 'post', 'commentedBy', 'createdAt', 'updatedAt', 'text']
+        fields = ['comment_id', 'post', 'commented_by', 'created_at', 'updated_at', 'text']
+        read_only_fields = ['created_at', 'updated_at']
+
+
+{
+  "caption": "test post 1",
+  "created_by": {
+    "id": 1,
+    "username": "Abdelrahman",
+    "profile_pic": "https://firebasestorage.googleapis.com/v0/b/gog-web-13346.appspot.com/o/userPic%2F30.png?alt=media&token=3187c36e-7f11-421d-be27-8db64d843358"
+  },
+  "post_pic": "https://firebasestorage.googleapis.com/v0/b/gog-web-13346.appspot.com/o/userPic%2F30.png?alt=media&token=3187c36e-7f11-421d-be27-8db64d843358",
+  "likes": 23
+}
