@@ -20,7 +20,6 @@ def post_list_create(request):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     elif request.method == 'POST':
-        # Extract created_by ID from request data (if provided)
         created_by_data = request.data.get('created_by')
 
         if created_by_data:
@@ -29,9 +28,8 @@ def post_list_create(request):
             except CreatedBy.DoesNotExist:
                 return Response({"error": "User not found."}, status=status.HTTP_400_BAD_REQUEST)
         else:
-            created_by = None  # Allow posts to be created without an author
+            created_by = None  
 
-        # Remove created_by from request data before passing to serializer
         post_data = request.data.copy()
         post_data.pop('created_by', None)
 

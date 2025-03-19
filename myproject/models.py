@@ -3,17 +3,16 @@ from django.contrib.auth.models import User
 from django.contrib.auth.models import AbstractUser, Group, Permission
 
 class User(AbstractUser):
-    profile_pic = models.URLField(null=True, blank=True)  # Ensure correct field name
+    profile_pic = models.URLField(null=True, blank=True)  
 
-    # Avoid reverse accessor conflicts by setting unique related_name values
     groups = models.ManyToManyField(
         Group,
-        related_name="custom_user_groups",  # Custom related_name
+        related_name="custom_user_groups", 
         blank=True
     )
     user_permissions = models.ManyToManyField(
         Permission,
-        related_name="custom_user_permissions",  # Custom related_name
+        related_name="custom_user_permissions",  
         blank=True
     )
 

@@ -15,7 +15,6 @@ from pathlib import Path
 import dj_database_url
 import os
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -32,9 +31,6 @@ ALLOWED_HOSTS = [
     "djangoapp-backend-production.up.railway.app",
     "127.0.0.1"
 ]
-
-
-# Application definition
 
 INSTALLED_APPS = [
     'django.contrib.admin',
