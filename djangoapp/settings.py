@@ -89,7 +89,7 @@ WSGI_APPLICATION = 'djangoapp.wsgi.application'
 
 DATABASES = {
     'default': dj_database_url.config(
-        default=os.getenv('DATABASE_PUBLIC_URL'),
+        default=os.getenv('DATABASE_URL'),
         conn_max_age=600,  # Keeps connection open for better performance
     )
 }
