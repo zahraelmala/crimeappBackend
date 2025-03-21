@@ -10,16 +10,14 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
-from datetime import timedelta
-from pathlib import Path
-import dj_database_url
-import os
 from dotenv import load_dotenv
+import os
+import dj_database_url
+from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-dotenv_path = os.path.join(BASE_DIR, ".env")
-load_dotenv(dotenv_path)
+load_dotenv()
 
 DATABASE_URL = os.getenv("DATABASE_PUBLIC_URL")  # Test if it's being read
 print("Database URL:", DATABASE_URL)  # Debugging: Check if it's loaded
@@ -94,9 +92,20 @@ WSGI_APPLICATION = 'djangoapp.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-DATABASES = {
-    'default': dj_database_url.config(default=os.getenv("DATABASE_PUBLIC_URL"))
+DATABASE_URL = os.getenv("DATABASE_PUBLIC_URL")
+
+if DATABASE_URL:
+    DATABASES = {
+    'default': dj_database_url.config(default=os.getenv("DATABASE_URL") or os.getenv("DATABASE_PUBLIC_URL"))
 }
+else:
+    print("⚠ WARNING: No DATABASE_URL found! Using SQLite fallback.")
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / "db.sqlite3",
+        }
+    }
 
 # Debugging: Check if Django is correctly reading the database config
 print("Database Config:", DATABASES)
@@ -141,3 +150,5 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+STATIC_ROOT = BASE_DIR / "staticfiles"
