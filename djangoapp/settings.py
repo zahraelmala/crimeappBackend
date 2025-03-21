@@ -21,9 +21,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 dotenv_path = os.path.join(BASE_DIR, ".env")
 load_dotenv(dotenv_path)
 
-DATABASE_URL = os.getenv("DATABASE_URL")  # Test if it's being read
+DATABASE_URL = os.getenv("DATABASE_PUBLIC_URL")  # Test if it's being read
 print("Database URL:", DATABASE_URL)  # Debugging: Check if it's loaded
-print("DATABASE_URL:", os.getenv("DATABASE_URL"))
+print("DATABASE_URL:", os.getenv("DATABASE_PUBLIC_URL"))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -95,7 +95,7 @@ WSGI_APPLICATION = 'djangoapp.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
-    'default': dj_database_url.config(default=os.getenv("DATABASE_URL"))
+    'default': dj_database_url.config(default=os.getenv("DATABASE_PUBLIC_URL"))
 }
 
 # Debugging: Check if Django is correctly reading the database config
