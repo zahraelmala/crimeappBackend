@@ -96,7 +96,7 @@ DATABASE_URL = os.getenv("DATABASE_PUBLIC_URL")
 
 if DATABASE_URL:
     DATABASES = {
-    'default': dj_database_url.config(default=os.getenv("DATABASE_URL") or os.getenv("DATABASE_PUBLIC_URL"))
+    'default': dj_database_url.config(default=os.getenv("DATABASE_PUBLIC_URL"))
 }
 else:
     print("⚠ WARNING: No DATABASE_URL found! Using SQLite fallback.")
