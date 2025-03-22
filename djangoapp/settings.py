@@ -94,18 +94,15 @@ WSGI_APPLICATION = 'djangoapp.wsgi.application'
 
 DATABASE_URL = os.getenv("DATABASE_PUBLIC_URL")
 
-if DATABASE_URL:
-    DATABASES = {
+print("RAILWAY ENVIRONMENT:", os.environ)  # Debug: Check what Railway sees
+print("DATABASE_PUBLIC_URL:", os.getenv("DATABASE_PUBLIC_URL"))
+print("DATABASE_URL:", os.getenv("DATABASE_URL"))  # Try using this if Railway provides it
+
+DATABASE_URL = os.getenv("DATABASE_PUBLIC_URL")
+
+DATABASES = {
     'default': dj_database_url.config(default=os.getenv("DATABASE_PUBLIC_URL"))
 }
-else:
-    print("⚠ WARNING: No DATABASE_URL found! Using SQLite fallback.")
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / "db.sqlite3",
-        }
-    }
 
 # Debugging: Check if Django is correctly reading the database config
 print("Database Config:", DATABASES)
