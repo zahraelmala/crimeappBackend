@@ -14,14 +14,13 @@ from dotenv import load_dotenv
 import os
 import dj_database_url
 from pathlib import Path
+import logging
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 load_dotenv()
 
 DATABASE_URL = os.getenv("DATABASE_PUBLIC_URL")  # Test if it's being read
-print("Database URL:", DATABASE_URL)  # Debugging: Check if it's loaded
-print("DATABASE_URL:", os.getenv("DATABASE_PUBLIC_URL"))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -94,18 +93,42 @@ WSGI_APPLICATION = 'djangoapp.wsgi.application'
 
 DATABASE_URL = os.getenv("DATABASE_PUBLIC_URL")
 
-print("RAILWAY ENVIRONMENT:", os.environ)  # Debug: Check what Railway sees
-print("DATABASE_PUBLIC_URL:", os.getenv("DATABASE_PUBLIC_URL"))
-print("DATABASE_URL:", os.getenv("DATABASE_URL"))  # Try using this if Railway provides it
-
-DATABASE_URL = os.getenv("DATABASE_PUBLIC_URL")
-
 DATABASES = {
     'default': dj_database_url.config(default=os.getenv("DATABASE_PUBLIC_URL"))
 }
 
+print("RAILWAY ENVIRONMENT:", os.environ)  # Debug: Check what Railway sees
+print("DATABASE_PUBLIC_URL:", os.getenv("DATABASE_PUBLIC_URL"))
+print("DATABASE_URL:", os.getenv("DATABASE_URL"))  # Try using this if Railway provides it
+print("DEBUG LOG - DATABASE_PUBLIC_URL:", os.getenv("DATABASE_PUBLIC_URL"))
+print("DEBUG LOG - SECRET_KEY:", os.getenv("SECRET_KEY"))
+print("DEBUG LOG - ALLOWED_HOSTS:", os.getenv("ALLOWED_HOSTS"))
 # Debugging: Check if Django is correctly reading the database config
 print("Database Config:", DATABASES)
+
+# Configure logging
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': 'debug.log',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}
+
+# Log environment variables
+logger = logging.getLogger('django')
+logger.debug(f"DEBUG LOG - DATABASE_PUBLIC_URL: {os.getenv('DATABASE_PUBLIC_URL')}")
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
