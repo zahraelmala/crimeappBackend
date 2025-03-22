@@ -94,7 +94,14 @@ WSGI_APPLICATION = 'djangoapp.wsgi.application'
 DATABASE_URL = os.getenv("DATABASE_PUBLIC_URL")
 
 DATABASES = {
-    'default': dj_database_url.config(default=os.getenv("DATABASE_PUBLIC_URL"))
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'railway',
+        'USER': 'postgres',
+        'PASSWORD': 'yCqSVPZLKbkwDpbkXhEzNtYqSPpEmAfp',
+        'HOST': 'mainline.proxy.rlwy.net',
+        'PORT': '56232',
+    }
 }
 
 print("RAILWAY ENVIRONMENT:", os.environ)  # Debug: Check what Railway sees
