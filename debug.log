@@ -5998,3 +5998,149 @@ File C:\Users\user\AppData\Local\Programs\Python\Python313\Lib\encodings\idna.py
 File C:\Users\user\Desktop\backendJango\djangoapp\djangoapp\wsgi.py first seen with mtime 1741866903.084575
 File C:\Users\user\Desktop\backendJango\djangoapp\venv\Lib\site-packages\django\contrib\sessions\backends\db.py first seen with mtime 1744898021.1473331
 File C:\Users\user\AppData\Local\Programs\Python\Python313\Lib\stringprep.py first seen with mtime 1733252248.0
+Exception while resolving variable 'name' in template 'unknown'.
+Traceback (most recent call last):
+  File "C:\Users\user\Desktop\backendJango\djangoapp\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\user\Desktop\backendJango\djangoapp\venv\Lib\site-packages\django\core\handlers\base.py", line 181, in _get_response
+    callback, callback_args, callback_kwargs = self.resolve_request(request)
+                                               ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\user\Desktop\backendJango\djangoapp\venv\Lib\site-packages\django\core\handlers\base.py", line 313, in resolve_request
+    resolver_match = resolver.resolve(request.path_info)
+  File "C:\Users\user\Desktop\backendJango\djangoapp\venv\Lib\site-packages\django\urls\resolvers.py", line 705, in resolve
+    raise Resolver404({"tried": tried, "path": new_path})
+django.urls.exceptions.Resolver404: {'tried': [[<URLResolver <URLPattern list> (admin:admin) 'admin/'>], [<URLResolver <module 'myproject.urls' from 'C:\\Users\\user\\Desktop\\backendJango\\djangoapp\\myproject\\urls.py'> (None:None) ''>, <URLPattern 'swagger/' [name='schema-swagger-ui']>], [<URLResolver <module 'myproject.urls' from 'C:\\Users\\user\\Desktop\\backendJango\\djangoapp\\myproject\\urls.py'> (None:None) ''>, <URLPattern 'swagger.json/' [name='schema-json']>], [<URLResolver <module 'myproject.urls' from 'C:\\Users\\user\\Desktop\\backendJango\\djangoapp\\myproject\\urls.py'> (None:None) ''>, <URLPattern 'posts/' [name='post-list-create']>], [<URLResolver <module 'myproject.urls' from 'C:\\Users\\user\\Desktop\\backendJango\\djangoapp\\myproject\\urls.py'> (None:None) ''>, <URLPattern 'posts/<int:pk>/' [name='post-detail']>], [<URLResolver <module 'myproject.urls' from 'C:\\Users\\user\\Desktop\\backendJango\\djangoapp\\myproject\\urls.py'> (None:None) ''>, <URLPattern 'posts/<int:post_id>/comments/' [name='comment-list-create']>], [<URLResolver <module 'myproject.urls' from 'C:\\Users\\user\\Desktop\\backendJango\\djangoapp\\myproject\\urls.py'> (None:None) ''>, <URLPattern 'comments/<int:pk>/' [name='comment-detail']>]], 'path': ''}
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\user\Desktop\backendJango\djangoapp\venv\Lib\site-packages\django\template\base.py", line 890, in _resolve_lookup
+    raise TypeError
+TypeError
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\user\Desktop\backendJango\djangoapp\venv\Lib\site-packages\django\template\base.py", line 901, in _resolve_lookup
+    current = getattr(current, bit)
+AttributeError: 'URLResolver' object has no attribute 'name'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\user\Desktop\backendJango\djangoapp\venv\Lib\site-packages\django\template\base.py", line 907, in _resolve_lookup
+    current = current[int(bit)]
+                      ~~~^^^^^
+ValueError: invalid literal for int() with base 10: 'name'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\user\Desktop\backendJango\djangoapp\venv\Lib\site-packages\django\template\base.py", line 914, in _resolve_lookup
+    raise VariableDoesNotExist(
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+    )  # missing attribute
+    ^
+django.template.base.VariableDoesNotExist: Failed lookup for key [name] in <URLResolver <URLPattern list> (admin:admin) 'admin/'>
+Not Found: /
+"GET / HTTP/1.1" 404 3807
+Exception while resolving variable 'name' in template 'unknown'.
+Traceback (most recent call last):
+  File "C:\Users\user\Desktop\backendJango\djangoapp\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\user\Desktop\backendJango\djangoapp\venv\Lib\site-packages\django\core\handlers\base.py", line 181, in _get_response
+    callback, callback_args, callback_kwargs = self.resolve_request(request)
+                                               ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\user\Desktop\backendJango\djangoapp\venv\Lib\site-packages\django\core\handlers\base.py", line 313, in resolve_request
+    resolver_match = resolver.resolve(request.path_info)
+  File "C:\Users\user\Desktop\backendJango\djangoapp\venv\Lib\site-packages\django\urls\resolvers.py", line 705, in resolve
+    raise Resolver404({"tried": tried, "path": new_path})
+django.urls.exceptions.Resolver404: {'tried': [[<URLResolver <URLPattern list> (admin:admin) 'admin/'>], [<URLResolver <module 'myproject.urls' from 'C:\\Users\\user\\Desktop\\backendJango\\djangoapp\\myproject\\urls.py'> (None:None) ''>, <URLPattern 'swagger/' [name='schema-swagger-ui']>], [<URLResolver <module 'myproject.urls' from 'C:\\Users\\user\\Desktop\\backendJango\\djangoapp\\myproject\\urls.py'> (None:None) ''>, <URLPattern 'swagger.json/' [name='schema-json']>], [<URLResolver <module 'myproject.urls' from 'C:\\Users\\user\\Desktop\\backendJango\\djangoapp\\myproject\\urls.py'> (None:None) ''>, <URLPattern 'posts/' [name='post-list-create']>], [<URLResolver <module 'myproject.urls' from 'C:\\Users\\user\\Desktop\\backendJango\\djangoapp\\myproject\\urls.py'> (None:None) ''>, <URLPattern 'posts/<int:pk>/' [name='post-detail']>], [<URLResolver <module 'myproject.urls' from 'C:\\Users\\user\\Desktop\\backendJango\\djangoapp\\myproject\\urls.py'> (None:None) ''>, <URLPattern 'posts/<int:post_id>/comments/' [name='comment-list-create']>], [<URLResolver <module 'myproject.urls' from 'C:\\Users\\user\\Desktop\\backendJango\\djangoapp\\myproject\\urls.py'> (None:None) ''>, <URLPattern 'comments/<int:pk>/' [name='comment-detail']>]], 'path': 'favicon.ico'}
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\user\Desktop\backendJango\djangoapp\venv\Lib\site-packages\django\template\base.py", line 890, in _resolve_lookup
+    raise TypeError
+TypeError
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\user\Desktop\backendJango\djangoapp\venv\Lib\site-packages\django\template\base.py", line 901, in _resolve_lookup
+    current = getattr(current, bit)
+AttributeError: 'URLResolver' object has no attribute 'name'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\user\Desktop\backendJango\djangoapp\venv\Lib\site-packages\django\template\base.py", line 907, in _resolve_lookup
+    current = current[int(bit)]
+                      ~~~^^^^^
+ValueError: invalid literal for int() with base 10: 'name'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\user\Desktop\backendJango\djangoapp\venv\Lib\site-packages\django\template\base.py", line 914, in _resolve_lookup
+    raise VariableDoesNotExist(
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+    )  # missing attribute
+    ^
+django.template.base.VariableDoesNotExist: Failed lookup for key [name] in <URLResolver <URLPattern list> (admin:admin) 'admin/'>
+Not Found: /favicon.ico
+"GET /favicon.ico HTTP/1.1" 404 3858
+File C:\Users\user\Desktop\backendJango\djangoapp\venv\Lib\site-packages\django\contrib\messages\storage\cookie.py first seen with mtime 1744898020.61445
+File C:\Users\user\Desktop\backendJango\djangoapp\venv\Lib\site-packages\django\contrib\sessions\serializers.py first seen with mtime 1744898021.1439981
+File C:\Users\user\Desktop\backendJango\djangoapp\venv\Lib\site-packages\django\contrib\messages\storage\fallback.py first seen with mtime 1744898020.6154563
+File C:\Users\user\Desktop\backendJango\djangoapp\venv\Lib\site-packages\django\contrib\messages\storage\session.py first seen with mtime 1744898020.6154563
+"GET /swagger/ HTTP/1.1" 200 2234
+"GET /static/drf-yasg/style.css HTTP/1.1" 200 1047
+"GET /static/drf-yasg/swagger-ui-dist/swagger-ui.css HTTP/1.1" 200 145206
+"GET /static/drf-yasg/insQ.min.js HTTP/1.1" 200 2093
+"GET /static/drf-yasg/swagger-ui-init.js HTTP/1.1" 200 15480
+"GET /static/drf-yasg/swagger-ui-dist/swagger-ui-bundle.js HTTP/1.1" 200 1046583
+"GET /static/drf-yasg/immutable.min.js HTTP/1.1" 200 56904
+"GET /static/drf-yasg/swagger-ui-dist/swagger-ui-standalone-preset.js HTTP/1.1" 200 322863
+"GET /swagger/?format=openapi HTTP/1.1" 200 4333
+"GET /static/drf-yasg/swagger-ui-dist/favicon-32x32.png HTTP/1.1" 200 628
+File C:\Users\user\Desktop\backendJango\djangoapp\venv\Lib\site-packages\django\contrib\auth\context_processors.py first seen with mtime 1744898019.24902
+File C:\Users\user\Desktop\backendJango\djangoapp\venv\Lib\site-packages\django\template\context_processors.py first seen with mtime 1744898022.1952765
+File C:\Users\user\Desktop\backendJango\djangoapp\venv\Lib\site-packages\django\contrib\messages\context_processors.py first seen with mtime 1744898020.6051912
+File C:\Users\user\Desktop\backendJango\djangoapp\venv\Lib\site-packages\django\contrib\staticfiles\storage.py first seen with mtime 1744898021.7358992
+(0.200) SELECT "myproject_post"."post_id", "myproject_post"."caption", "myproject_post"."created_by_id", "myproject_post"."created_at", "myproject_post"."updated_at", "myproject_post"."post_pic", "myproject_post"."likes" FROM "myproject_post"; args=(); alias=default
+"GET /posts/ HTTP/1.1" 200 2
+(0.207) SELECT "myproject_createdby"."id", "myproject_createdby"."user_id", "myproject_createdby"."username", "myproject_createdby"."user_profile_pic" FROM "myproject_createdby" WHERE "myproject_createdby"."id" = 1 LIMIT 21; args=(1,); alias=default
+Bad Request: /posts/
+"POST /posts/ HTTP/1.1" 400 27
+(0.227) SELECT "myproject_createdby"."id", "myproject_createdby"."user_id", "myproject_createdby"."username", "myproject_createdby"."user_profile_pic" FROM "myproject_createdby" WHERE "myproject_createdby"."id" = 1 LIMIT 21; args=(1,); alias=default
+Bad Request: /posts/
+"POST /posts/ HTTP/1.1" 400 35
+(0.222) SELECT "myproject_createdby"."id", "myproject_createdby"."user_id", "myproject_createdby"."username", "myproject_createdby"."user_profile_pic" FROM "myproject_createdby" WHERE "myproject_createdby"."id" = 1 LIMIT 21; args=(1,); alias=default
+Bad Request: /posts/
+"POST /posts/ HTTP/1.1" 400 35
+(0.201) SELECT "myproject_createdby"."id", "myproject_createdby"."user_id", "myproject_createdby"."username", "myproject_createdby"."user_profile_pic" FROM "myproject_createdby" WHERE "myproject_createdby"."id" = 1 LIMIT 21; args=(1,); alias=default
+Bad Request: /posts/
+"POST /posts/ HTTP/1.1" 400 35
+(0.209) SELECT "myproject_createdby"."id", "myproject_createdby"."user_id", "myproject_createdby"."username", "myproject_createdby"."user_profile_pic" FROM "myproject_createdby" WHERE "myproject_createdby"."id" = 1 LIMIT 21; args=(1,); alias=default
+Bad Request: /posts/
+"POST /posts/ HTTP/1.1" 400 35
+(0.212) SELECT "myproject_createdby"."id", "myproject_createdby"."user_id", "myproject_createdby"."username", "myproject_createdby"."user_profile_pic" FROM "myproject_createdby" WHERE "myproject_createdby"."id" = 1 LIMIT 21; args=(1,); alias=default
+Bad Request: /posts/
+"POST /posts/ HTTP/1.1" 400 35
+(0.217) SELECT "myproject_createdby"."id", "myproject_createdby"."user_id", "myproject_createdby"."username", "myproject_createdby"."user_profile_pic" FROM "myproject_createdby" WHERE "myproject_createdby"."id" = 1 LIMIT 21; args=(1,); alias=default
+(0.200) INSERT INTO "myproject_post" ("caption", "created_by_id", "created_at", "updated_at", "post_pic", "likes") VALUES ('test post 1', 1, '2025-04-17T14:04:41.702529+00:00'::timestamptz, '2025-04-17T14:04:41.702553+00:00'::timestamptz, 'https://firebasestorage.googleapis.com/v0/b/gog-web-13346.appspot.com/o/userPic%2F30.png?alt=media&token=3187c36e-7f11-421d-be27-8db64d843358', 23) RETURNING "myproject_post"."post_id"; args=('test post 1', 1, datetime.datetime(2025, 4, 17, 14, 4, 41, 702529, tzinfo=datetime.timezone.utc), datetime.datetime(2025, 4, 17, 14, 4, 41, 702553, tzinfo=datetime.timezone.utc), 'https://firebasestorage.googleapis.com/v0/b/gog-web-13346.appspot.com/o/userPic%2F30.png?alt=media&token=3187c36e-7f11-421d-be27-8db64d843358', 23); alias=default
+(0.198) SELECT "myproject_user"."id", "myproject_user"."password", "myproject_user"."last_login", "myproject_user"."is_superuser", "myproject_user"."username", "myproject_user"."first_name", "myproject_user"."last_name", "myproject_user"."email", "myproject_user"."is_staff", "myproject_user"."is_active", "myproject_user"."date_joined", "myproject_user"."profile_pic" FROM "myproject_user" WHERE "myproject_user"."id" = 1 LIMIT 21; args=(1,); alias=default
+"POST /posts/ HTTP/1.1" 201 485
+File C:\Users\user\Desktop\backendJango\djangoapp\venv\Lib\site-packages\tzdata\__init__.py first seen with mtime 1744898009.207981
+File C:\Users\user\Desktop\backendJango\djangoapp\venv\Lib\site-packages\tzdata\zoneinfo\__init__.py first seen with mtime 1744898009.285123
+File C:\Users\user\AppData\Local\Programs\Python\Python313\Lib\importlib\resources\readers.py first seen with mtime 1733252248.0
+File C:\Users\user\AppData\Local\Programs\Python\Python313\Lib\importlib\resources\_itertools.py first seen with mtime 1733252248.0
+File C:\Users\user\AppData\Local\Programs\Python\Python313\Lib\importlib\readers.py first seen with mtime 1733252248.0
+File C:\Users\user\AppData\Local\Programs\Python\Python313\Lib\importlib\resources\_adapters.py first seen with mtime 1733252248.0
+(0.217) SELECT "myproject_post"."post_id", "myproject_post"."caption", "myproject_post"."created_by_id", "myproject_post"."created_at", "myproject_post"."updated_at", "myproject_post"."post_pic", "myproject_post"."likes" FROM "myproject_post"; args=(); alias=default
+(0.269) SELECT "myproject_createdby"."id", "myproject_createdby"."user_id", "myproject_createdby"."username", "myproject_createdby"."user_profile_pic" FROM "myproject_createdby" WHERE "myproject_createdby"."id" = 1 LIMIT 21; args=(1,); alias=default
+(0.203) SELECT "myproject_user"."id", "myproject_user"."password", "myproject_user"."last_login", "myproject_user"."is_superuser", "myproject_user"."username", "myproject_user"."first_name", "myproject_user"."last_name", "myproject_user"."email", "myproject_user"."is_staff", "myproject_user"."is_active", "myproject_user"."date_joined", "myproject_user"."profile_pic" FROM "myproject_user" WHERE "myproject_user"."id" = 1 LIMIT 21; args=(1,); alias=default
+"GET /posts/ HTTP/1.1" 200 487
