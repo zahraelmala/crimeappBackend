@@ -33,6 +33,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     "djangoapp-backend-production.up.railway.app",
+    "crimeappbackend-production.up.railway.app",
     "127.0.0.1"
 ]
 
@@ -103,15 +104,6 @@ DATABASES = {
         'PORT': '56232',
     }
 }
-
-print("RAILWAY ENVIRONMENT:", os.environ)  # Debug: Check what Railway sees
-print("DATABASE_PUBLIC_URL:", os.getenv("DATABASE_PUBLIC_URL"))
-print("DATABASE_URL:", os.getenv("DATABASE_URL"))  # Try using this if Railway provides it
-print("DEBUG LOG - DATABASE_PUBLIC_URL:", os.getenv("DATABASE_PUBLIC_URL"))
-print("DEBUG LOG - SECRET_KEY:", os.getenv("SECRET_KEY"))
-print("DEBUG LOG - ALLOWED_HOSTS:", os.getenv("ALLOWED_HOSTS"))
-# Debugging: Check if Django is correctly reading the database config
-print("Database Config:", DATABASES)
 
 # Configure logging
 LOGGING = {
