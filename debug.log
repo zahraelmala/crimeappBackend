@@ -4957,3 +4957,26 @@ File C:\Users\pc\AppData\Local\Programs\Python\Python312\Lib\site-packages\djang
                 AND pg_catalog.pg_table_is_visible(c.oid)
         ; args=None; alias=default
 (0.219) SELECT "django_migrations"."id", "django_migrations"."app", "django_migrations"."name", "django_migrations"."applied" FROM "django_migrations"; args=(); alias=default
+"GET /swagger/ HTTP/1.1" 200 2234
+File C:\Users\pc\AppData\Local\Programs\Python\Python312\Lib\encodings\idna.py first seen with mtime 1722967350.0
+File C:\Users\pc\AppData\Local\Programs\Python\Python312\Lib\stringprep.py first seen with mtime 1722967352.0
+File C:\Users\pc\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\models\sql\compiler.py first seen with mtime 1742226763.9494808
+File C:\Users\pc\Documents\GitHub\crimeappBackend\djangoapp\wsgi.py first seen with mtime 1742226337.8537335
+File C:\Users\pc\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\contrib\sessions\backends\db.py first seen with mtime 1742226763.050975
+"GET /static/drf-yasg/style.css HTTP/1.1" 200 1047
+"GET /static/drf-yasg/swagger-ui-init.js HTTP/1.1" 200 15480
+"GET /static/drf-yasg/immutable.min.js HTTP/1.1" 200 56904
+"GET /static/drf-yasg/swagger-ui-dist/swagger-ui.css HTTP/1.1" 200 145206
+"GET /static/drf-yasg/insQ.min.js HTTP/1.1" 200 2093
+"GET /static/drf-yasg/swagger-ui-dist/swagger-ui-bundle.js HTTP/1.1" 200 1046583
+"GET /static/drf-yasg/swagger-ui-dist/swagger-ui-standalone-preset.js HTTP/1.1" 200 322863
+"GET /swagger/?format=openapi HTTP/1.1" 200 4333
+"GET /static/drf-yasg/swagger-ui-dist/favicon-32x32.png HTTP/1.1" 200 628
+File C:\Users\pc\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\contrib\staticfiles\storage.py first seen with mtime 1742226763.6926334
+File C:\Users\pc\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\contrib\messages\storage\cookie.py first seen with mtime 1742226762.601033
+File C:\Users\pc\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\contrib\auth\context_processors.py first seen with mtime 1742226760.8583727
+File C:\Users\pc\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\template\context_processors.py first seen with mtime 1742226764.0744574
+File C:\Users\pc\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\contrib\messages\storage\session.py first seen with mtime 1742226762.60282
+File C:\Users\pc\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\contrib\messages\context_processors.py first seen with mtime 1742226762.5906892
+File C:\Users\pc\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\contrib\messages\storage\fallback.py first seen with mtime 1742226762.6020322
+File C:\Users\pc\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\contrib\sessions\serializers.py first seen with mtime 1742226763.0440612
