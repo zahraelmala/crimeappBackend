@@ -15328,3 +15328,26 @@ File C:\Users\pc\Documents\GitHub\crimeappBackend\venv\Lib\site-packages\django\
                 AND pg_catalog.pg_table_is_visible(c.oid)
         ; args=None; alias=default
 (0.203) SELECT "django_migrations"."id", "django_migrations"."app", "django_migrations"."name", "django_migrations"."applied" FROM "django_migrations"; args=(); alias=default
+File C:\Users\pc\AppData\Local\Programs\Python\Python312\Lib\encodings\idna.py first seen with mtime 1722967350.0
+File C:\Users\pc\AppData\Local\Programs\Python\Python312\Lib\stringprep.py first seen with mtime 1722967352.0
+File C:\Users\pc\Documents\GitHub\crimeappBackend\venv\Lib\site-packages\django\contrib\sessions\backends\db.py first seen with mtime 1744915796.9966488
+File C:\Users\pc\Documents\GitHub\crimeappBackend\djangoapp\wsgi.py first seen with mtime 1742226337.8537335
+File C:\Users\pc\Documents\GitHub\crimeappBackend\venv\Lib\site-packages\django\contrib\messages\storage\fallback.py first seen with mtime 1744915796.6766503
+File C:\Users\pc\Documents\GitHub\crimeappBackend\venv\Lib\site-packages\django\contrib\sessions\serializers.py first seen with mtime 1744915796.993646
+File C:\Users\pc\Documents\GitHub\crimeappBackend\venv\Lib\site-packages\django\contrib\messages\storage\cookie.py first seen with mtime 1744915796.6756485
+File C:\Users\pc\Documents\GitHub\crimeappBackend\venv\Lib\site-packages\django\contrib\messages\storage\session.py first seen with mtime 1744915796.6766503
+(0.203) SELECT "myproject_post"."post_id", "myproject_post"."caption", "myproject_post"."created_by_id", "myproject_post"."created_at", "myproject_post"."updated_at", "myproject_post"."post_pic", "myproject_post"."likes" FROM "myproject_post"; args=(); alias=default
+(0.203) SELECT "myproject_createdby"."id", "myproject_createdby"."user_id", "myproject_createdby"."username", "myproject_createdby"."user_profile_pic" FROM "myproject_createdby" WHERE "myproject_createdby"."id" = 1 LIMIT 21; args=(1,); alias=default
+(0.188) SELECT "myproject_user"."id", "myproject_user"."password", "myproject_user"."last_login", "myproject_user"."is_superuser", "myproject_user"."username", "myproject_user"."first_name", "myproject_user"."last_name", "myproject_user"."email", "myproject_user"."is_staff", "myproject_user"."is_active", "myproject_user"."date_joined", "myproject_user"."profile_pic" FROM "myproject_user" WHERE "myproject_user"."id" = 1 LIMIT 21; args=(1,); alias=default
+"GET /posts/ HTTP/1.1" 200 487
+File C:\Users\pc\Documents\GitHub\crimeappBackend\venv\Lib\site-packages\tzdata\__init__.py first seen with mtime 1744915792.2251039
+File C:\Users\pc\Documents\GitHub\crimeappBackend\venv\Lib\site-packages\tzdata\zoneinfo\__init__.py first seen with mtime 1744915792.2491043
+File C:\Users\pc\AppData\Local\Programs\Python\Python312\Lib\importlib\readers.py first seen with mtime 1722967352.0
+File C:\Users\pc\AppData\Local\Programs\Python\Python312\Lib\importlib\resources\readers.py first seen with mtime 1722967352.0
+File C:\Users\pc\AppData\Local\Programs\Python\Python312\Lib\importlib\resources\_itertools.py first seen with mtime 1722967352.0
+"GET /swagger/ HTTP/1.1" 200 2234
+"GET /swagger/?format=openapi HTTP/1.1" 200 4333
+File C:\Users\pc\Documents\GitHub\crimeappBackend\venv\Lib\site-packages\django\contrib\staticfiles\storage.py first seen with mtime 1744915797.3353083
+File C:\Users\pc\Documents\GitHub\crimeappBackend\venv\Lib\site-packages\django\template\context_processors.py first seen with mtime 1744915797.6406133
+File C:\Users\pc\Documents\GitHub\crimeappBackend\venv\Lib\site-packages\django\contrib\messages\context_processors.py first seen with mtime 1744915796.671648
+File C:\Users\pc\Documents\GitHub\crimeappBackend\venv\Lib\site-packages\django\contrib\auth\context_processors.py first seen with mtime 1744915795.3937218
