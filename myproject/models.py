@@ -30,6 +30,9 @@ class CreatedBy(models.Model):
 class Post(models.Model):
     post_id = models.AutoField(primary_key=True)
     caption = models.TextField(blank=True, null=True)
+    location = models.TextField(blank=True, null=True)
+    crimeTime = models.TextField(blank=True, null=True)
+    crimeType = models.TextField(blank=True, null=True)
     created_by = models.ForeignKey(CreatedBy, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

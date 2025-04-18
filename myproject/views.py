@@ -56,6 +56,9 @@ def post_detail(request, pk):
         serializer = PostSerializer(post, data=request.data)
         if serializer.is_valid():
             post.caption = serializer.validated_data.get('caption', post.caption)
+            post.location = serializer.validated_data.get('location', post.location)
+            post.crimeTime = serializer.validated_data.get('crimeTime', post.crimeTime)
+            post.crimeType = serializer.validated_data.get('crimeType', post.crimeType)
             post.post_pic = serializer.validated_data.get('post_pic', post.post_pic)
             post.likes = serializer.validated_data.get('likes', post.likes)
             post.updated_at = now()

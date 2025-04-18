@@ -20,7 +20,7 @@ class PostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = ['post_id', 'caption', 'created_by', 'created_at', 'updated_at', 'post_pic', 'likes']
+        fields = ['post_id', 'caption', 'location', 'crimeTime','crimeType','created_by', 'created_at', 'updated_at', 'post_pic', 'likes']
         read_only_fields = ['created_by', 'created_at', 'updated_at']
 
 class CommentSerializer(serializers.ModelSerializer):
@@ -34,6 +34,9 @@ class CommentSerializer(serializers.ModelSerializer):
 
 {
   "caption": "test post 1",
+  "location": "Sidi Gaber - Alexandria",
+  "crimeTime": "Wed, 02 Apr 2025 at 4:34 AM",
+  "crimeType": "Theft",
   "created_by": {
     "id": 1,
     "username": "Abdelrahman",
