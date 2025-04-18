@@ -31,11 +31,18 @@ SECRET_KEY = 'django-insecure-^yixhwrzs&5!5!bcmin3pd69no-94h@+^z-^8d=t605s(z*k@x
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [
-    "djangoapp-backend-production.up.railway.app",
-    "crimeappbackend-production.up.railway.app",
-    "127.0.0.1"
-]
+# ALLOWED_HOSTS = [
+#     "djangoapp-backend-production.up.railway.app",
+#     "crimeappbackend-production.up.railway.app",
+#     "127.0.0.1",
+#     "localhost",
+#     "0.0.0.0",
+#     "192.168.1.57",
+# ]
+
+ALLOWED_HOSTS = ["*"]
+
+CORS_ALLOW_ALL_ORIGINS = True
 
 INSTALLED_APPS = [
     'django.contrib.admin',
