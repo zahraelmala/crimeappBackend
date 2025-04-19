@@ -3,6 +3,7 @@ from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from rest_framework import permissions
 from .views import post_list_create, post_detail, comment_list_create, comment_detail
+from myproject import views
 
 
 # Swagger API Documentation
@@ -31,5 +32,9 @@ urlpatterns = [
     # Comment URLs
     path('posts/<int:post_id>/comments/', comment_list_create, name='comment-list-create'),  
     path('comments/<int:pk>/', comment_detail, name='comment-detail'),  
+
+    # Add these new paths for email verification
+    path('send-verification-code/', views.send_verification_email, name='send_verification_email'),
+    path('check-verification-code/', views.check_verification_code, name='check_verification_code'),
 ]
 

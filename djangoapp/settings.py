@@ -178,3 +178,9 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 STATIC_ROOT = BASE_DIR / "staticfiles"
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+SENDGRID_API_KEY = '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'
+DEFAULT_FROM_EMAIL = 'bodyessam223@gmail.com'
+
