@@ -12,14 +12,14 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from dotenv import load_dotenv
 import os
-import dj_database_url
 from pathlib import Path
 import logging
-
-BASE_DIR = Path(__file__).resolve().parent.parent
-
 load_dotenv()
 
+SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
+DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL")
+
+BASE_DIR = Path(__file__).resolve().parent.parent
 DATABASE_URL = os.getenv("DATABASE_PUBLIC_URL")  # Test if it's being read
 
 # Quick-start development settings - unsuitable for production
@@ -180,7 +180,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
-SENDGRID_API_KEY = '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'
-DEFAULT_FROM_EMAIL = 'bodyessam223@gmail.com'
 

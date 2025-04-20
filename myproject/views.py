@@ -108,8 +108,19 @@ from rest_framework import status
 from django.conf import settings
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Email, To, Content, Mail
+import os
+from dotenv import load_dotenv
 
-# Method to send verification code to email
+load_dotenv()  # Make sure this is at the top of settings.py
+
+SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
+DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL")
+
+# Utility function to generate a 4-digit code
+def generate_verification_code():
+    return str(random.randint(1000, 9999))
+
+
 @swagger_auto_schema(
     method='post',
     request_body=EmailVerificationSerializer,
@@ -117,37 +128,45 @@ from sendgrid.helpers.mail import Email, To, Content, Mail
 )
 @api_view(['POST'])
 def send_verification_email(request):
-    # Validate and get the email from request body
     serializer = EmailVerificationSerializer(data=request.data)
-    if serializer.is_valid():
-        email = serializer.validated_data.get('email')
-    else:
+
+    if not serializer.is_valid():
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-    # Generate a random 4-digit verification code
-    verification_code = '1234'  # Replace with your code generation logic
 
-    # Store the verification code in cache with an expiration time (e.g., 5 minutes)
-    cache.set(f'verification_code_{email}', verification_code, timeout=300)  # Timeout of 5 minutes
+    email = serializer.validated_data.get('email')
+    verification_code = generate_verification_code()
 
-    # Prepare the email content
+    # Store the code with a 5-minute expiry
+    cache_key = f'verification_code_{email}'
+    cache.set(cache_key, verification_code, timeout=300)
+
     subject = "Your Verification Code"
-    message = f"Your verification code is {verification_code}. It will expire in 5 minutes."
-    html_message = f"<html><body><h1>Your Verification Code</h1><p>Your verification code is <strong>{verification_code}</strong>. It will expire in 5 minutes.</p></body></html>"
+    plain_message = f"Your verification code is {verification_code}. It will expire in 5 minutes."
+    html_message = f"""
+    <html>
+      <body>
+        <h2>Your Verification Code</h2>
+        <p>Your verification code is <strong>{verification_code}</strong>.</p>
+        <p>This code will expire in 5 minutes.</p>
+      </body>
+    </html>
+    """
 
-    # Send the email using SendGrid
     try:
-        sg = SendGridAPIClient(api_key=settings.SENDGRID_API_KEY)
-        from_email = Email(settings.DEFAULT_FROM_EMAIL)
-        to_email = To(email)
-        content = Content("text/plain", message)
-        mail = Mail(from_email, to_email, subject, content)
-        mail.html = html_message  # Set the HTML message
+        sg = SendGridAPIClient(api_key=SENDGRID_API_KEY)
+        mail = Mail(
+            from_email=Email(DEFAULT_FROM_EMAIL),
+            to_emails=To(email),
+            subject=subject,
+            plain_text_content=Content("text/plain", plain_message),
+            html_content=html_message
+        )
         response = sg.send(mail)
-        print(f"Email sent to {email} with status code {response.status_code}")
+        print(f"Email sent to {email} - Status: {response.status_code}")
         return Response({"message": "Verification code sent"}, status=status.HTTP_200_OK)
+
     except Exception as e:
-        print(f"Error sending email: {e}")
+        print(f"SendGrid error: {e}")
         return Response({"error": "Failed to send verification email"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 # Method to check the verification code
