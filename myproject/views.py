@@ -295,3 +295,57 @@ def check_verification_code(request):
     else:
         return Response({"error": "Invalid verification code"}, status=status.HTTP_400_BAD_REQUEST)
 
+
+@swagger_auto_schema(
+    method='post',
+    request_body=CommentSerializer,
+    responses={201: CommentSerializer}
+)
+@api_view(['POST'])
+def create_comment(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+
+    # Get token
+    id_token = request.headers.get('Authorization')
+    if not id_token:
+        return Response({"error": "Token is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+    if id_token.startswith('Bearer '):
+        id_token = id_token[7:]
+
+    # Verify token
+    user_uid = get_user_from_token(id_token)
+    if not user_uid:
+        return Response({"error": "Invalid or expired token"}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Create comment
+    serializer = CommentSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save(post=post, firebase_uid=user_uid)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+def get_comments_for_post(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    comments = post.comments.all().order_by('-created_at')
+    serialized_comments = CommentSerializer(comments, many=True)
+
+    response_data = {
+        "post": {
+            "post_id": post.post_id,
+            "caption": post.caption,
+            "likes": post.likes,
+            "username": post.username,
+            "created_at": post.created_at,
+            "updated_at": post.updated_at,
+            "location": post.location,
+            "post_pic": post.post_pic,
+            "profile_pic": post.profile_pic,
+        },
+        "comments": serialized_comments.data
+    }
+
+    return Response(response_data, status=status.HTTP_200_OK)

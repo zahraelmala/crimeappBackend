@@ -15,10 +15,9 @@ class PostSerializer(serializers.ModelSerializer):
         read_only_fields = ['created_at', 'updated_at']
 
 class CommentSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Comment
-        fields = ['comment_id', 'post', 'comment_username', 'comment_profile_pic' , 'created_at', 'updated_at', 'text']
+        fields = ['comment_id', 'post', 'firebase_uid', 'text', 'created_at', 'updated_at']
         read_only_fields = ['created_at', 'updated_at']
     
 {

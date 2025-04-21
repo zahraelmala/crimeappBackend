@@ -12,8 +12,7 @@ class PostAdmin(admin.ModelAdmin):
     list_filter = ('created_at', 'updated_at')
 
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ('comment_id', 'text', 
-                    'comment_username', 'comment_profile_pic',
+    list_display = ('comment_id', 'text',
                       'created_at', 'updated_at')  
     list_filter = ('created_at', 'updated_at')
 

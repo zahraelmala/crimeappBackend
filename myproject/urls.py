@@ -2,8 +2,11 @@ from django.urls import path
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from rest_framework import permissions
-from .views import post_list_create, post_detail, comment_list_create, comment_detail, like_post, unlike_post
 from myproject import views
+from .views import (
+    post_list_create, post_detail, comment_list_create, comment_detail,
+    like_post, unlike_post, create_comment, get_comments_for_post
+)
 
 
 # Swagger API Documentation
@@ -34,8 +37,12 @@ urlpatterns = [
     path('posts/<int:pk>/unlike/', unlike_post, name='unlike-post'),  # Unlike post
 
     # Comment URLs
-    path('posts/<int:post_id>/comments/', comment_list_create, name='comment-list-create'),  
+    # path('posts/<int:post_id>/comments/', comment_list_create, name='comment-list-create'),  
     path('comments/<int:pk>/', comment_detail, name='comment-detail'),  
+   
+    # Firebase Auth-based Comment Endpoints
+    path('posts/<int:pk>/comment/', create_comment, name='create-comment'),
+    path('posts/<int:pk>/comments-detail/', get_comments_for_post, name='get-comments-for-post'),
 
     # Add these new paths for email verification
     path('send-verification-code/', views.send_verification_email, name='send_verification_email'),

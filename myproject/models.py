@@ -21,12 +21,11 @@ class Post(models.Model):
 
 class Comment(models.Model):
     comment_id = models.AutoField(primary_key=True)
-    post = models.ForeignKey(Post, related_name='comments', on_delete=models.CASCADE)
-    comment_username = models.TextField(blank=True, null=True)
-    comment_profile_pic = models.URLField(blank=True, null=True)
+    post = models.ForeignKey('Post', related_name='comments', on_delete=models.CASCADE)
+    firebase_uid = models.CharField(max_length=128)  # New field
+    text = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    text = models.TextField(blank=True, null=True)
 
     def __str__(self):
-        return f"Comment {self.comment_id} on Post {self.post.post_id} by {self.comment_username}"
+        return f"Comment {self.comment_id} on Post {self.post.post_id}"
