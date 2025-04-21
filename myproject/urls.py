@@ -2,7 +2,7 @@ from django.urls import path
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from rest_framework import permissions
-from .views import post_list_create, post_detail, comment_list_create, comment_detail
+from .views import post_list_create, post_detail, comment_list_create, comment_detail, like_post, unlike_post
 from myproject import views
 
 
@@ -28,6 +28,10 @@ urlpatterns = [
     # Post URLs
     path('posts/', post_list_create, name='post-list-create'),  
     path('posts/<int:pk>/', post_detail, name='post-detail'),  
+
+    # Like/Unlike URLs
+    path('posts/<int:pk>/like/', like_post, name='like-post'),  # Like post
+    path('posts/<int:pk>/unlike/', unlike_post, name='unlike-post'),  # Unlike post
 
     # Comment URLs
     path('posts/<int:post_id>/comments/', comment_list_create, name='comment-list-create'),  

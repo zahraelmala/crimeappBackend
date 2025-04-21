@@ -117,15 +117,14 @@ LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'handlers': {
-        'file': {
+        'console': {
             'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': 'debug.log',
+            'class': 'logging.StreamHandler',
         },
     },
     'loggers': {
         'django': {
-            'handlers': ['file'],
+            'handlers': ['console'],
             'level': 'DEBUG',
             'propagate': True,
         },
@@ -180,4 +179,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+import firebase_admin
+from firebase_admin import credentials
+
+cred = credentials.Certificate("djangoapp/config/firebase-adminsdk.json")
+firebase_admin.initialize_app(cred)
 

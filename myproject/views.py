@@ -10,7 +10,94 @@ from django.conf import settings
 from django.utils.crypto import get_random_string
 from django.core.cache import cache
 import random
-from django.core.mail import send_mail
+from firebase_admin import auth
+from rest_framework import status
+import logging
+# Configure logger
+logger = logging.getLogger(__name__)
+
+# Utility function to get Firebase UID from the token
+def get_user_from_token(id_token):
+    try:
+        # Log the token being verified
+        logger.debug(f"Verifying ID token: {id_token}")
+        decoded_token = auth.verify_id_token(id_token)
+        logger.debug(f"Decoded token: {decoded_token}")
+        return decoded_token['uid']
+    except Exception as e:
+        logger.error(f"Error verifying token: {e}")
+        return None
+
+# Like a Post
+@api_view(['POST'])
+def like_post(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    logger.debug(f"Post found: {post}")
+
+    # Get Firebase ID token from request headers
+    id_token = request.headers.get('Authorization')
+    logger.debug(f"Received ID token: {id_token}")
+
+    if not id_token:
+        logger.warning("Token is missing in the request")
+        return Response({"error": "Token is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Clean the token if 'Bearer ' prefix is present
+    if id_token.startswith('Bearer '):
+        id_token = id_token[7:]
+        logger.debug(f"Cleaned token: {id_token}")
+
+    # Verify and get the user UID from Firebase
+    user_uid = get_user_from_token(id_token)
+
+    if not user_uid:
+        logger.warning("Invalid or expired token")
+        return Response({"error": "Invalid or expired token"}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Check if user is already in the list of likes
+    if user_uid in post.likes:
+        logger.info(f"User {user_uid} already liked the post.")
+        return Response({"message": "You already liked this post"}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Add the user ID to the likes list
+    post.likes.append(user_uid)
+    post.save()
+    logger.info(f"Post liked by user: {user_uid}")
+
+    return Response({"message": "Post liked successfully"}, status=status.HTTP_200_OK)
+
+# Unlike a Post
+@api_view(['POST'])
+def unlike_post(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+
+    id_token = request.headers.get('Authorization')
+    logger.debug(f"Received ID token: {id_token}")
+
+    if not id_token:
+        logger.warning("Token is missing in the request")
+        return Response({"error": "Token is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Clean the token if 'Bearer ' prefix is present
+    if id_token.startswith('Bearer '):
+        id_token = id_token[7:]
+        logger.debug(f"Cleaned token: {id_token}")
+
+    # Verify and get the user UID from Firebase
+    user_uid = get_user_from_token(id_token)
+
+    if not user_uid:
+        return Response({"error": "Invalid or expired token"}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Check if the user ID is in the likes list
+    if user_uid not in post.likes:
+        return Response({"message": "You haven't liked this post yet"}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Remove the user ID from the likes list
+    post.likes.remove(user_uid)
+    post.save()
+
+    return Response({"message": "Post unliked successfully"}, status=status.HTTP_200_OK)
 
 @swagger_auto_schema(
     method='post',
@@ -179,25 +266,32 @@ def send_verification_email(request):
 def check_verification_code(request):
     # Validate and get the email and code from request body
     serializer = EmailVerificationSerializer(data=request.data)
-    if serializer.is_valid():
-        email = serializer.validated_data.get('email')
-        code = serializer.validated_data.get('code')  # Using the code from serializer
-    else:
+    if not serializer.is_valid():
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    email = serializer.validated_data.get('email').lower().strip()
+    code = serializer.validated_data.get('code', '').strip()
 
     # Check if the code is provided
     if not code:
         return Response({"error": "Code is required"}, status=status.HTTP_400_BAD_REQUEST)
-    
+
     # Retrieve the stored verification code from cache
-    stored_code = cache.get(f'verification_code_{email}')
-    
+    cache_key = f'verification_code_{email}'
+    stored_code = cache.get(cache_key)
+
+    # Debugging logs
+    print(f"[DEBUG] Cache Key: {cache_key}")
+    print(f"[DEBUG] Stored Code: {stored_code}")
+    print(f"[DEBUG] Entered Code: {code}")
+
     # Check if the code has expired or not found
     if not stored_code:
         return Response({"error": "Code expired or not found"}, status=status.HTTP_404_NOT_FOUND)
-    
+
     # Check if the entered code matches the stored one
     if stored_code == code:
         return Response({"message": "Code verified successfully"}, status=status.HTTP_200_OK)
     else:
         return Response({"error": "Invalid verification code"}, status=status.HTTP_400_BAD_REQUEST)
+
