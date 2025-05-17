@@ -113,32 +113,6 @@ DATABASES = {
     }
 }
 
-# Configure logging
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'level': 'DEBUG',
-            'class': 'logging.StreamHandler',
-        },
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['console'],
-            'level': 'DEBUG',
-            'propagate': True,
-        },
-    },
-}
-
-# Log environment variables
-logger = logging.getLogger('django')
-logger.debug(f"DEBUG LOG - DATABASE_PUBLIC_URL: {os.getenv('DATABASE_PUBLIC_URL')}")
-
-# Password validation
-# https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
