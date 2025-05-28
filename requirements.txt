@@ -11,3 +11,8 @@ django-extensions
 firebase-admin
 sendgrid
 numpy
+pymongo
+gridfs
+opencv-python
+deepface
+Pillow
