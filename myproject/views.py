@@ -362,7 +362,9 @@ from django.views.decorators.http import require_http_methods
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
 # MongoDB setup
-client = MongoClient("mongodb+srv://abdelrahman007:01010aab@cluster0.pehiyhw.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
+MONGO_URI = os.getenv("MONGO_URI")
+
+client = MongoClient(MONGO_URI)
 db = client["Crime_Catcher"]
 fs = gridfs.GridFS(db)
 

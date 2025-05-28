@@ -10,3 +10,4 @@ python-dotenv
 django-extensions
 firebase-admin
 sendgrid
+numpy
