@@ -349,3 +349,91 @@ def get_comments_for_post(request, pk):
     }
 
     return Response(response_data, status=status.HTTP_200_OK)
+
+import numpy as np
+from django.http import JsonResponse
+from deepface import DeepFace
+from pymongo import MongoClient
+import gridfs
+import cv2
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
+
+from django.core.files.uploadedfile import InMemoryUploadedFile
+
+# MongoDB setup
+client = MongoClient("mongodb+srv://abdelrahman007:01010aab@cluster0.pehiyhw.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
+db = client["Crime_Catcher"]
+fs = gridfs.GridFS(db)
+
+# Load encodings once
+known_encodings = []
+known_names = []
+
+def load_known_faces():
+    global known_encodings, known_names
+    known_encodings.clear()
+    known_names.clear()
+    for stored_file in fs.find():
+        file_data = stored_file.read()
+        np_arr = np.frombuffer(file_data, np.uint8)
+        img = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
+        try:
+            embedding = DeepFace.represent(img, model_name="Facenet")[0]["embedding"]
+            known_encodings.append(embedding)
+            known_names.append(stored_file.filename)
+        except Exception as e:
+            print(f"Error processing {stored_file.filename}: {e}")
+    print(f"Loaded {len(known_encodings)} suspect faces.")
+
+# Load at startup
+load_known_faces()
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def match_suspect(request):
+    try:
+        file = request.FILES.get('image')
+        if not file:
+            return JsonResponse({'error': 'No image provided'}, status=400)
+
+        # Read uploaded image
+        file_data = np.frombuffer(file.read(), np.uint8)
+        img = cv2.imdecode(file_data, cv2.IMREAD_COLOR)
+
+        # Extract embedding
+        input_embedding = DeepFace.represent(img, model_name="Facenet")[0]["embedding"]
+
+        for i, stored_embedding in enumerate(known_encodings):
+            distance = np.linalg.norm(np.array(input_embedding) - np.array(stored_embedding))
+            if distance < 10:
+                return JsonResponse({'message': 'Match found', 'suspect': known_names[i]})
+
+        return JsonResponse({'message': 'No match found'}, status=404)
+
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def upload_suspect(request):
+    try:
+        file = request.FILES.get('image')
+        name = request.POST.get('name', 'suspect_unknown.jpg')
+
+        if not file:
+            return JsonResponse({'error': 'No image provided'}, status=400)
+
+        # Save to MongoDB GridFS
+        file_id = fs.put(file, filename=name)
+        print(f"Uploaded suspect {name} with ID {file_id}")
+
+        # Reload encodings with new entry
+        load_known_faces()
+
+        return JsonResponse({'message': f'{name} uploaded and indexed'}, status=201)
+
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+

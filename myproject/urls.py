@@ -47,5 +47,8 @@ urlpatterns = [
     # Add these new paths for email verification
     path('send-verification-code/', views.send_verification_email, name='send_verification_email'),
     path('check-verification-code/', views.check_verification_code, name='check_verification_code'),
+
+    path('match/', views.match_suspect, name='match_suspect'),
+    path('upload-suspect/', views.upload_suspect, name='upload_suspect'),
 ]
 
