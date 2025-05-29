@@ -29,20 +29,16 @@ DATABASE_URL = os.getenv("DATABASE_PUBLIC_URL")  # Test if it's being read
 SECRET_KEY = 'django-insecure-^yixhwrzs&5!5!bcmin3pd69no-94h@+^z-^8d=t605s(z*k@x'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-# ALLOWED_HOSTS = [
-#     "djangoapp-backend-production.up.railway.app",
-#     "crimeappbackend-production.up.railway.app",
-#     "127.0.0.1",
-#     "localhost",
-#     "0.0.0.0",
-#     "192.168.1.57",
-# ]
-
-ALLOWED_HOSTS = ["*"]
-
-CORS_ALLOW_ALL_ORIGINS = True
+ALLOWED_HOSTS = [
+    "djangoapp-backend-production.up.railway.app",
+    "crimeappbackend-production.up.railway.app",
+    "127.0.0.1",
+    "localhost",
+    "0.0.0.0",
+    "192.168.1.57",
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -140,18 +136,24 @@ USE_I18N = True
 
 USE_TZ = True
 
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.1/howto/static-files/
-
 STATIC_URL = 'static/'
-
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
+STATIC_ROOT = BASE_DIR / 'staticfiles' 
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-STATIC_ROOT = BASE_DIR / "staticfiles"
+CORS_ALLOW_ALL_ORIGINS = True
+
+CORS_ALLOW_HEADERS = [
+    "content-type",
+    "authorization",
+    "access-control-allow-origin",
+]
+
+CORS_ALLOW_CREDENTIALS = True
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_SSL_REDIRECT = True
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 

@@ -1,4 +1,8 @@
 # views.py
+import base64
+from io import BytesIO
+from tkinter import Image
+import uuid
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
@@ -350,92 +354,285 @@ def get_comments_for_post(request, pk):
 
     return Response(response_data, status=status.HTTP_200_OK)
 
+import os
+import time
+import threading
 import numpy as np
+import cv2
 from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
 from deepface import DeepFace
 from pymongo import MongoClient
 import gridfs
-import cv2
-from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_http_methods
+from PIL import Image
+import uuid
+import tempfile
+from rest_framework.decorators import api_view
+from drf_yasg.utils import swagger_auto_schema
 
-from django.core.files.uploadedfile import InMemoryUploadedFile
-
-# MongoDB setup
+# --- MongoDB Connection ---
 MONGO_URI = os.getenv("MONGO_URI")
-
 client = MongoClient(MONGO_URI)
 db = client["Crime_Catcher"]
 fs = gridfs.GridFS(db)
 
-# Load encodings once
-known_encodings = []
-known_names = []
+# --- Globals for caching face data ---
+known_faces = {}  # Cached embeddings grouped by suspect name
+faces_loaded = False
+SIMILARITY_THRESHOLD = 0.55  # Adjustable matching threshold
+
+
+def cosine_similarity(a, b):
+    """Compute cosine similarity between two vectors."""
+    return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
+
 
 def load_known_faces():
-    global known_encodings, known_names
-    known_encodings.clear()
-    known_names.clear()
+    global known_faces
+    print("🔄 Loading suspect faces from GridFS...")
+    start = time.time()
+    known_faces.clear()
+
     for stored_file in fs.find():
         file_data = stored_file.read()
         np_arr = np.frombuffer(file_data, np.uint8)
         img = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
-        try:
-            embedding = DeepFace.represent(img, model_name="Facenet")[0]["embedding"]
-            known_encodings.append(embedding)
-            known_names.append(stored_file.filename)
-        except Exception as e:
-            print(f"Error processing {stored_file.filename}: {e}")
-    print(f"Loaded {len(known_encodings)} suspect faces.")
 
-# Load at startup
-load_known_faces()
+        if img is None:
+            print(f"❌ Failed to decode image: {stored_file.filename}")
+            continue
+
+        try:
+            result = DeepFace.represent(img, model_name="Facenet", enforce_detection=False)
+            if not result or "embedding" not in result[0]:
+                print(f"⚠️ No face detected in {stored_file.filename}")
+                continue
+
+            embedding = result[0]["embedding"]
+            # Extract full base filename (without extension), keep timestamp
+            base_name = stored_file.filename.rsplit('.', 1)[0]  # e.g. "suspect_1748478825"
+            if base_name not in known_faces:
+                known_faces[base_name] = []
+            known_faces[base_name].append(embedding)
+        except Exception as e:
+            print(f"⚠️ Error processing {stored_file.filename}: {e}")
+
+    total_embeddings = sum(len(v) for v in known_faces.values())
+    print(f"✅ Loaded {total_embeddings} embeddings for {len(known_faces)} suspects in {time.time() - start:.2f}s")
+
+
+
+def ensure_faces_loaded():
+    """Load faces once if not already loaded."""
+    global faces_loaded
+    if not faces_loaded:
+        load_known_faces()
+        faces_loaded = True
+
+def get_image_base64_from_gridfs(filename):
+    try:
+        file = fs.find_one({'filename': filename})
+        if file:
+            image_data = file.read()
+            encoded = base64.b64encode(image_data).decode('utf-8')
+            # Detect mime-type by file extension
+            ext = filename.split('.')[-1].lower()
+            mime = f"image/{'jpeg' if ext == 'jpg' else ext}"
+            return f"data:{mime};base64,{encoded}"
+        else:
+            print(f"File not found in GridFS: {filename}")
+    except Exception as e:
+        print(f"Error reading GridFS file '{filename}': {e}")
+    return None
+
+def find_suspect_image_filename(base_name):
+    print(f"Searching for base_name: {base_name}")
+    for ext in ['jpg', 'png', 'jpeg']:
+        filename = f"{base_name}.{ext}"
+        print(f"Checking filename: {filename}")
+        file = fs.find_one({'filename': filename})
+        if file:
+            print(f"Found file: {filename}")
+            return filename
+    print("No matching file found.")
+    return None
 
 @csrf_exempt
+@swagger_auto_schema(
+    method='post',
+    request_body=None,
+    responses={200: "Match found", 400: "Bad Request", 500: "Internal Server Error"}
+)
+@api_view(['POST'])
 @require_http_methods(["POST"])
 def match_suspect(request):
-    try:
-        file = request.FILES.get('image')
-        if not file:
-            return JsonResponse({'error': 'No image provided'}, status=400)
+    input_embeddings = []
 
-        # Read uploaded image
-        file_data = np.frombuffer(file.read(), np.uint8)
-        img = cv2.imdecode(file_data, cv2.IMREAD_COLOR)
+    # Ensure known faces cache is ready
+    ensure_faces_loaded()
 
-        # Extract embedding
-        input_embedding = DeepFace.represent(img, model_name="Facenet")[0]["embedding"]
+    # Handle uploaded image
+    if 'image' in request.FILES:
+        image_file = request.FILES['image']
+        try:
+            img_array = np.array(Image.open(image_file))
+            result = DeepFace.represent(img_array, model_name='Facenet', enforce_detection=False)
+            if result and 'embedding' in result[0]:
+                input_embeddings.append(result[0]['embedding'])
+            else:
+                return JsonResponse({'match': False, 'message': 'No face detected in image'}, status=200)
+        except Exception as e:
+            return JsonResponse({'error': f'Image processing error: {str(e)}'}, status=500)
 
-        for i, stored_embedding in enumerate(known_encodings):
-            distance = np.linalg.norm(np.array(input_embedding) - np.array(stored_embedding))
-            if distance < 10:
-                return JsonResponse({'message': 'Match found', 'suspect': known_names[i]})
+    # Handle uploaded video
+    elif 'video' in request.FILES:
+        video_file = request.FILES['video']
+        temp_dir = tempfile.gettempdir()
+        temp_path = os.path.join(temp_dir, f"{uuid.uuid4().hex}.mp4")
+        try:
+            with open(temp_path, 'wb') as f:
+                for chunk in video_file.chunks():
+                    f.write(chunk)
 
-        return JsonResponse({'message': 'No match found'}, status=404)
+            cap = cv2.VideoCapture(temp_path)
+            frames_checked = 0
+            max_frames = 100
+            frame_interval = 5  # Process every 5th frame to speed up
 
-    except Exception as e:
-        return JsonResponse({'error': str(e)}, status=500)
+            while cap.isOpened() and frames_checked < max_frames:
+                ret, frame = cap.read()
+                if not ret:
+                    break
+
+                if frames_checked % frame_interval == 0:
+                    try:
+                        result = DeepFace.represent(frame, model_name='Facenet', enforce_detection=False)
+                        if result and 'embedding' in result[0]:
+                            input_embeddings.append(result[0]['embedding'])
+                        if len(input_embeddings) >= 3:
+                            break
+                    except Exception:
+                        pass  # Ignore individual frame errors
+
+                frames_checked += 1
+
+            cap.release()
+        except Exception as e:
+            return JsonResponse({'error': f'Video processing error: {str(e)}'}, status=500)
+        finally:
+            if os.path.exists(temp_path):
+                os.remove(temp_path)
+
+    else:
+        return JsonResponse({'error': 'No image or video uploaded'}, status=400)
+
+    if not input_embeddings:
+        return JsonResponse({'match': False, 'message': 'No face found in upload'}, status=200)
+
+    if not known_faces:
+        return JsonResponse({'match': False, 'message': 'No known suspects in database'}, status=200)
+
+    # Find best match among cached embeddings
+    best_similarity = 0
+    best_match = None
+
+    for input_emb in input_embeddings:
+        for name, stored_embs in known_faces.items():
+            for stored_emb in stored_embs:
+                sim = cosine_similarity(np.array(input_emb), np.array(stored_emb))
+                if sim > best_similarity:
+                    best_similarity = sim
+                    best_match = name
+
+    if best_similarity > SIMILARITY_THRESHOLD:
+        matched_filename = find_suspect_image_filename(best_match)
+        matched_image_data = None
+        print(f"Matched filename: {matched_filename}")
+        if matched_filename:
+            matched_image_data = get_image_base64_from_gridfs(matched_filename)
+            print(f"Matched image data length: {len(matched_image_data) if matched_image_data else 'None'}")
+        print(f"🔍 Best match: {best_match} with similarity {best_similarity:.2f}")
+        print(f"Matched image data: {matched_image_data}")
+        return JsonResponse({
+            'match': True,
+            'name': best_match,
+            'confidence': round(best_similarity * 100, 2),
+            'threshold': SIMILARITY_THRESHOLD * 100,
+            'matched_face_url': matched_image_data,  # base64 string or None
+        })
+    else:
+        return JsonResponse({
+            'match': False,
+            'confidence': round(best_similarity * 100, 2),
+            'threshold': SIMILARITY_THRESHOLD * 100
+        })
 
 
 @csrf_exempt
-@require_http_methods(["POST"])
 def upload_suspect(request):
     try:
-        file = request.FILES.get('image')
-        name = request.POST.get('name', 'suspect_unknown.jpg')
+        file = request.FILES.get('media')  # 'media' can be image or video
+        name = request.POST.get('name', 'suspect')
 
         if not file:
-            return JsonResponse({'error': 'No image provided'}, status=400)
+            return JsonResponse({'error': 'No media file provided'}, status=400)
 
-        # Save to MongoDB GridFS
-        file_id = fs.put(file, filename=name)
-        print(f"Uploaded suspect {name} with ID {file_id}")
+        content_type = file.content_type
+        timestamp = int(time.time())
 
-        # Reload encodings with new entry
-        load_known_faces()
+        if 'image' in content_type:
+            unique_name = f"{name}_{timestamp}.jpg"
+            file_id = fs.put(file, filename=unique_name)
+            print(f"🖼️ Uploaded suspect image: {unique_name} with ID {file_id}")
 
-        return JsonResponse({'message': f'{name} uploaded and indexed'}, status=201)
+        elif 'video' in content_type:
+            np_video = np.frombuffer(file.read(), np.uint8)
+            video_temp = f"/tmp/{name}_{timestamp}.mp4"
+            with open(video_temp, 'wb') as temp_file:
+                temp_file.write(np_video)
+
+            cap = cv2.VideoCapture(video_temp)
+            success, frame = cap.read()
+            face_saved = False
+
+            while success:
+                result = DeepFace.represent(frame, model_name="Facenet", enforce_detection=False)
+                if result and "embedding" in result[0]:
+                    _, encoded_img = cv2.imencode('.jpg', frame)
+                    file_id = fs.put(encoded_img.tobytes(), filename=f"{name}_{timestamp}.jpg")
+                    print(f"🎥 Extracted face frame saved for {name} from video, ID: {file_id}")
+                    face_saved = True
+                    break
+                success, frame = cap.read()
+
+            cap.release()
+            os.remove(video_temp)
+
+            if not face_saved:
+                return JsonResponse({'error': 'No clear face detected in video'}, status=400)
+
+        else:
+            return JsonResponse({'error': 'Unsupported media type'}, status=400)
+
+        # Reload faces cache asynchronously after upload
+        def reload_faces_async():
+            global faces_loaded
+            try:
+                load_known_faces()
+                faces_loaded = True
+            except Exception as e:
+                print(f"⚠️ Error reloading faces: {e}")
+
+        threading.Thread(target=reload_faces_async).start()
+
+        return JsonResponse({'message': f'{name} uploaded and indexing started'}, status=201)
 
     except Exception as e:
+        print(f"🚨 Upload error: {e}")
         return JsonResponse({'error': str(e)}, status=500)
+
+
+
+
 
